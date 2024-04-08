@@ -74,8 +74,8 @@ const put_tipoHerramienta = async (req,res)=>{
             const {id_tipo, nombre_tipo, descripcion} = req.body
             const data = [nombre_tipo, descripcion, id_tipo]
 
-            //validation error express validator
-            const validation_error = validationResult(req); 
+            //validation error express validator  
+            const validation_error = validationResult(req);
             if(!validation_error.isEmpty()){
                 const result = return_error(400,'Datos con formato incorrecto');
                 conn.end;    

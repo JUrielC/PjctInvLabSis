@@ -6,8 +6,8 @@ const return_error = require('../helpers/return_error.js')
 const post_herramienta = async(req, res)=>{
     await pool.getConnection().then(async (conn) => {
         try{
-            const {tipo, estatus, observaciones} = req.body;
-            const data = [tipo, estatus, observaciones];
+            const {id_tipo, id_estatus, observaciones} = req.body;
+            const data = [id_tipo, id_estatus, observaciones];
             
             //validacion expresss validator
             const validation_error = validationResult(req); 
@@ -18,8 +18,8 @@ const post_herramienta = async(req, res)=>{
             }
 
             //validation tipo exists, estatus exists
-            const validation_tipo = await conn.query("SELECT COUNT (id_tipo) as result FROM tipo_herramienta WHERE id_tipo = ?", tipo)
-            const validation_estatus = await conn.query("SELECT COUNT (id_estatus) as result FROM estatus_herramientas WHERE id_estatus = ?", estatus)
+            const validation_tipo = await conn.query("SELECT COUNT (id_tipo) as result FROM tipo_herramienta WHERE id_tipo = ?", id_tipo)
+            const validation_estatus = await conn.query("SELECT COUNT (id_estatus) as result FROM estatus_herramientas WHERE id_estatus = ?", id_estatus)
 
             if(parseInt(validation_tipo[0].result) === 0 || parseInt(validation_estatus[0].result) === 0){
                 const result = return_error(400,'El tipo de herramienta o el estatus no existe');
@@ -28,7 +28,7 @@ const post_herramienta = async(req, res)=>{
             }
 
             //query
-            const query = await conn.query("INSERT INTO herramientas (tipo, estatus, observaciones) VALUES (?,?,?)",data)
+            const query = await conn.query("INSERT INTO herramientas (id_tipo, id_estatus, observaciones) VALUES (?,?,?)",data)
             const insert_id = parseInt(query.insertId)
             //res estatus
             res.status(201).json({
@@ -76,8 +76,8 @@ const put_herramienta = async (req,res)=>{
     await pool.getConnection().then(async (conn) => {
 
         try{
-            const {id_herramienta, tipo, estatus, observaciones} = req.body;
-            const data = [tipo, estatus, observaciones, id_herramienta];
+            const {id_herramienta, id_tipo, id_estatus, observaciones} = req.body;
+            const data = [id_tipo, id_estatus, observaciones, id_herramienta];
 
             //validacion expresss validator
             const validation_error = validationResult(req); 
@@ -88,8 +88,8 @@ const put_herramienta = async (req,res)=>{
             }
 
              //validation tipo exists, estatus exists
-             const validation_tipo = await conn.query("SELECT COUNT (id_tipo) as result FROM tipo_herramienta WHERE id_tipo = ?", tipo)
-             const validation_estatus = await conn.query("SELECT COUNT (id_estatus) as result FROM estatus_herramientas WHERE id_estatus = ?", estatus)
+             const validation_tipo = await conn.query("SELECT COUNT (id_tipo) as result FROM tipo_herramienta WHERE id_tipo = ?", id_tipo)
+             const validation_estatus = await conn.query("SELECT COUNT (id_estatus) as result FROM estatus_herramientas WHERE id_estatus = ?", id_estatus)
             
              if(parseInt(validation_tipo[0].result) === 0 || parseInt(validation_estatus[0].result) === 0){
                 const result = return_error(400,'El tipo de herramienta o el estatus no existe');
@@ -165,7 +165,7 @@ const delete_herramienta = async (req,res)=>{
             conn.end;
             res.status(500).json(result)
 
-        }
+        }  
 
     })
 }
