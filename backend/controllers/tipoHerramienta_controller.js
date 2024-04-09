@@ -14,7 +14,7 @@ const post_tipoHerramienta = async(req, res)=>{
             const validation_error = validationResult(req); 
             if(!validation_error.isEmpty()){
                 const result = return_error(400,'Datos con formato o extensión incorrecta');
-                conn.end;    
+                conn.end;
                 return res.status(400).json(result) 
             }
             
