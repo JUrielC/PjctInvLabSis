@@ -7,9 +7,9 @@ const post_tipoHerramienta = async(req, res)=>{
     await pool.getConnection().then(async (conn) => {
         
         try{
+            
             const {nombre_tipo, descripcion} = req.body;
             const data = [nombre_tipo, descripcion];
-            
             //validacion expresss validator
             const validation_error = validationResult(req); 
             if(!validation_error.isEmpty()){
@@ -38,7 +38,7 @@ const post_tipoHerramienta = async(req, res)=>{
         catch (error){
             const result = return_error(500,'Internal server error');
             conn.end;    
-            res.status(500).json(result)    
+            res.status(500).json(result)       //console.log(error)
             console.log(error.message)  
         }
     })
