@@ -6,7 +6,7 @@ const { token_sign, verify_token, decode_sign } = require('../helpers/generate_t
 
 const post_login = async (req, res) =>{
     await pool.getConnection().then(async (conn) =>{
-        try{
+        try{ 
             const {nombre_login, password} = req.body;
 
             //validation error express validator  
@@ -56,11 +56,16 @@ const post_login = async (req, res) =>{
 
 
                 //obtener id de usuario y rol
-                const user = await conn.query("SELECT id_usuario FROM usuarios WHERE nombre_login = ? and password = ?", [nombre_login, pass_hash])
-                const rol = await conn.query ("SELECT ru.nombre_rol FROM roles_usuarios ru INNER JOIN usuarios u ON ru.id_rol = u.id_rol WHERE id_usuario = ?", user)
-                
-                console.log("Sesion iniciada exitosamente ");
+                //pass_hash surge de un select a la base de datos con el fin de obtener el passwor registrado ahí
+                //se hace un select para obtener el id_usuario usando el nombre_login y passhash
+                const user_query = await conn.query("SELECT id_usuario FROM usuarios WHERE nombre_login = ? and password = ?", [nombre_login, pass_hash])
+                const user =  user_query[0].id_usuario; 
+                const rol_query = await conn.query ("SELECT ru.nombre_rol FROM roles_usuarios ru INNER JOIN usuarios u ON ru.id_rol = u.id_rol WHERE id_usuario = ?", user)
+                const rol = rol_query[0].nombre_rol;              
 
+                console.log(user)
+                console.log(rol)
+                console.log("Sesion iniciada exitosamente ");
                 const  token_session = await token_sign(user, rol);
                  //res estatus
                 res.status(200).json({
