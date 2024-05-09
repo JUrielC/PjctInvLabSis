@@ -8,7 +8,12 @@ const encrypt = async(text) =>{
 const compare = async(text, textHash) => {
     return await bcrypt.compare(text, textHash);
 }
-
+/*
+encrypt("").then(
+    (hashh) =>{
+        console.log(hashh)
+    }
+)*/
 
 module.exports = {
     encrypt,
