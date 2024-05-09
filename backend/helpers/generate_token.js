@@ -1,20 +1,22 @@
 const jwt = require ('jsonwebtoken');
-
+require('dotenv').config({path: 'backend/.env'});
+//generar un token
 const token_sign = async (user, rol) =>{
     return jwt.sign(
         {
-        id: user,
+        id_user: user,
         rol: rol
         },
             process.env.JWT_SECRET,
         {
-            expiresIn: "2h"
+            expiresIn: "5h"
         }
     )
 }
+//verificar token
 const verify_token = async (token) =>{
     try{
-    return jwt.verify(token, process.env.JWT_SECRET)
+        return jwt.verify(token, process.env.JWT_SECRET)
     }
     catch(error){
         return null;

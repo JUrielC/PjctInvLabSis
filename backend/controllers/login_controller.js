@@ -54,7 +54,6 @@ const post_login = async (req, res) =>{
 
             if(checkPassword && user_activo_validation){
 
-
                 //obtener id de usuario y rol
                 //pass_hash surge de un select a la base de datos con el fin de obtener el passwor registrado ahí
                 //se hace un select para obtener el id_usuario usando el nombre_login y passhash
