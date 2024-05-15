@@ -15,7 +15,7 @@ const post_tipoHerramienta = async(req, res)=>{
             const validation_error = validationResult(req); 
             if(!validation_error.isEmpty()){
                 const result = return_error(400,'Datos con formato o extensión incorrecta');
-                conn.release;
+                conn.release();
                 return res.status(400).json(result) 
             }
             
@@ -33,12 +33,12 @@ const post_tipoHerramienta = async(req, res)=>{
                 }   
             })
 
-            conn.release;
+            conn.release();
 
         }
         catch (error){
             const result = return_error(500,'Internal server error');
-            conn.release;    
+            conn.release();    
             res.status(500).json(result)       //console.log(error)
             console.log(error.message)  
         }
@@ -53,13 +53,13 @@ const get_tipoHerramienta = async (req,res)=>{
             //query
             const query = await conn.query("SELECT * FROM tipo_herramienta");
             res.status(200).json(query)
-            conn.release;
+            conn.release();
 
         }
         
         catch(error){
             const result = return_error(500,'Internal server error');
-            conn.release;
+            conn.release();
             res.status(500).json(result)
         } 
 
@@ -79,7 +79,7 @@ const put_tipoHerramienta = async (req,res)=>{
             const validation_error = validationResult(req);
             if(!validation_error.isEmpty()){
                 const result = return_error(400,'Datos con formato incorrecto');
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result) 
             }
 
@@ -88,7 +88,7 @@ const put_tipoHerramienta = async (req,res)=>{
             
             if(parseInt(validation_id_tipo[0].result) === 0){
                 const result = return_error(400,'El ID del tipo de herramienta no existe');
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result)    
             }
 
@@ -97,17 +97,17 @@ const put_tipoHerramienta = async (req,res)=>{
             res.status(201).json({
                 "ok": true,
                 "message": {
-                    "code": 201,
+                    "code": 200,
                     "messageText": "Tipo de herramienta actualizado con éxito"
                 }
             })
-            conn.release;
+            conn.release();
 
         }
 
         catch(error){
             const result = return_error(500,'Internal server error');
-            conn.release;
+            conn.release();
             res.status(500).json(result)
             //console.log(error)
         }
@@ -125,7 +125,7 @@ const delete_tipoHerramienta = async (req,res)=>{
             const validation_error = validationResult(req); 
             if(!validation_error.isEmpty()){
                 const result = return_error(400,'Datos con formato incorrecto');
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result) 
             }
             //validation id_tipo exists
@@ -133,7 +133,7 @@ const delete_tipoHerramienta = async (req,res)=>{
 
             if(parseInt(validation_id_tipo[0].result) === 0){
                 const result = return_error(400,'El ID del tipo de herramienta no existe');
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result)    
             }
 
@@ -142,7 +142,7 @@ const delete_tipoHerramienta = async (req,res)=>{
             const validation_herramientas = await conn.query("SELECT COUNT (tipo) as result FROM herramientas WHERE tipo = ?",id_tipo)
             if(parseInt(validation_herramientas[0].result) !== 0){
                 const result = return_error(400,'Aún hay herramientas registradas con ese tipo');
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result)    
             }
  
@@ -155,13 +155,13 @@ const delete_tipoHerramienta = async (req,res)=>{
                     "messageText": "Tipo eliminado con éxito"
                 }
             })
-            conn.release;
+            conn.release();
 
         }
         
         catch(error){
             const result = return_error(500,'Internal server error');
-            conn.release;
+            conn.release();
             res.status(500).json(result)
             //console.log(error)
         }

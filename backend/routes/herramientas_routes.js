@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const {check_token} = require('../middlewares/check_token.js')
+const {check_rol} = require('../middlewares/check_rol.js')
 
 const { body, param } = require("express-validator");
 
 const { post_herramienta, get_herramienta, get_herramienta_por_tipo, put_herramienta, delete_herramienta} = require('../controllers/herramientas_controller.js');
 
-router.post('/', body('id_tipo').isNumeric(),body('observaciones').isLength({max: 255}), post_herramienta);
+router.post('/', check_token, check_rol(['Administrador', 'Laboratorista']), body('id_tipo').isNumeric(),body('observaciones').isLength({max: 255}), post_herramienta);
 
 router.get('/', get_herramienta);
 

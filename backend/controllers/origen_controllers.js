@@ -12,12 +12,12 @@ const get_origen = async (req,res)=>{
             const query = await conn.query("select * from origen");
             //console.log(query[0])
             res.status(200).json(query)
-            conn.release; 
+            conn.release(); 
         }
         
         catch(error){
             const result = return_error(500,'Internal server error');
-            conn.release;
+            conn.release();
             res.status(500).json(result)
             console.log (error)
         }

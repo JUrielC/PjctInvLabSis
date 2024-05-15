@@ -3,35 +3,49 @@ const pool = require('../config/database.js');
 const { validationResult } = require('express-validator');
 const return_error = require('../helpers/return_error.js');
 const fecha_hora = require('../helpers/return_date.js')
+const id_user_token = require ('../helpers/return_id_user_token.js')
 
 const post_herramienta = async(req, res)=>{
     await pool.getConnection().then(async (conn) => {
         try{
+
+            //console.log(req.headers.authorization)
+            const id_user = await id_user_token(req.headers.authorization) 
             const id_estatus = 1; //id _estatus = 1 es el estatus "Disponible"
             const fecha_alta = fecha_hora();
             const {id_tipo, observaciones,id_origen} = req.body;
-            const data = [id_tipo, id_estatus, observaciones,fecha_alta,id_origen];
+            const data = [id_tipo, id_estatus, observaciones,fecha_alta,id_origen, id_user];
             
             //validacion expresss validator
             const validation_error = validationResult(req); 
             if(!validation_error.isEmpty()){
                 const result = return_error(400,'Datos con formato o extensión incorrecta');
-                conn.release;     
+                conn.release();     
                 return res.status(400).json(result) 
             }
 
-            //validation tipo exists, estatus exists
+            //validation tipo exists
             const validation_tipo = await conn.query("SELECT COUNT (id_tipo) as result FROM tipo_herramienta WHERE id_tipo = ?", id_tipo)
             //const validation_estatus = await conn.query("SELECT COUNT (id_estatus) as result FROM estatus_herramienta WHERE id_estatus = ?", id_estatus)
 
             if(parseInt(validation_tipo[0].result) === 0){
                 const result = return_error(400,'El tipo de herramienta o el estatus no existe');
-                conn.release;    
+                conn.release();    
+                return res.status(400).json(result)    
+            }
+
+            //validation user exist
+            const validation_user = await conn.query("SELECT COUNT (id_usuario) as result FROM usuarios WHERE id_usuario = ?", id_user)
+            //const validation_estatus = await conn.query("SELECT COUNT (id_estatus) as result FROM estatus_herramienta WHERE id_estatus = ?", id_estatus)
+
+            if(parseInt(validation_user[0].result) === 0){
+                const result = return_error(400,'Error al ingresar el id de usuario, internal server error');
+                conn.release();    
                 return res.status(400).json(result)    
             }
 
             //query
-            const query = await conn.query("INSERT INTO herramientas (id_tipo, id_estatus, observaciones, fecha_alta, id_origen) VALUES (?,?,?,?,?)",data)
+            const query = await conn.query("INSERT INTO herramientas (id_tipo, id_estatus, observaciones, fecha_alta, id_origen, id_usuario) VALUES (?,?,?,?,?,?)",data)
             const insert_id = parseInt(query.insertId)
             //res estatus
             res.status(201).json({
@@ -43,14 +57,14 @@ const post_herramienta = async(req, res)=>{
                 }   
             })
 
-            conn.release;
+            conn.release();
 
         }
         catch (error){
             const result = return_error(500,'Internal server error');
-            conn.release;    
+            conn.release();    
             res.status(500).json(result)    
-            console.log(error.message)  
+            //console.log(error)  
 
         }
     })
@@ -64,12 +78,12 @@ const get_herramienta = async (req,res)=>{
             const query = await conn.query("CALL consultar_herramientas()");
             //console.log(query[0])
             res.status(200).json(query[0])
-            conn.release; 
+            conn.release(); 
         }
         
         catch(error){
             const result = return_error(500,'Internal server error');
-            conn.release;
+            conn.release();
             res.status(500).json(result)
             console.log (error)
         }
@@ -87,7 +101,7 @@ const get_herramienta_por_tipo = async (req,res)=>{
             const validation_error = validationResult(req);
             if(!validation_error.isEmpty()){
                 const result = return_error(400,'Datos con formato incorrecto');
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result) 
             }
             
@@ -96,7 +110,7 @@ const get_herramienta_por_tipo = async (req,res)=>{
 
             if(parseInt(validation_id_tipo[0].result) === 0){
                 const result = return_error(400,`El ID del tipo de herramienta no existe: ${id_tipo}`);
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result)    
             }
 
@@ -104,18 +118,18 @@ const get_herramienta_por_tipo = async (req,res)=>{
             //query
             const query = await conn.query("CALL consultar_herramientas_por_tipo (?)", id_tipo);
             res.status(200).json(query[0])
-            conn.release;
+            conn.release();
         }
         
         catch(error){
             const result = return_error(500,'Internal server error');
-            conn.release;
+            conn.release();
             res.status(500).json(result)
         }
 
     })
 }
-/*******la fecha de alta no se debe modificar ********/
+/*******la fecha de alta no se debe modificar ni el usuario que hace el alta********/
 const put_herramienta = async (req,res)=>{
     await pool.getConnection().then(async (conn) => {
 
@@ -127,7 +141,7 @@ const put_herramienta = async (req,res)=>{
             const validation_error = validationResult(req); 
             if(!validation_error.isEmpty()){
                 const result = return_error(400,'Datos con formato o extensión incorrecta');
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result) 
             }
 
@@ -137,7 +151,7 @@ const put_herramienta = async (req,res)=>{
             
              if(parseInt(validation_tipo[0].result) === 0 || parseInt(validation_estatus[0].result) === 0){
                 const result = return_error(400,'El tipo de herramienta o el estatus no existe');
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result)    
             }
 
@@ -149,17 +163,17 @@ const put_herramienta = async (req,res)=>{
                 "ok": true,
                 "id_herramienta": insert_id,
                 "message": {
-                    "code": 201,
+                    "code": 200,
                     "messageText": "Actualizado con éxito"
                 }   
             })
 
-            conn.release;
+            conn.release();
         }
         
         catch(error){
             const result = return_error(500,'Internal server error');
-            conn.release;
+            conn.release();
             res.status(500).json(result)
             console.log(error)
         }
@@ -177,7 +191,7 @@ const delete_herramienta = async (req,res)=>{
             const validation_error = validationResult(req); 
             if(!validation_error.isEmpty()){
                 const result = return_error(400,'Datos con formato incorrecto');
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result) 
             }
 
@@ -186,7 +200,7 @@ const delete_herramienta = async (req,res)=>{
 
             if(parseInt(validation_id_herr[0].result) === 0){
                 const result = return_error(400,'El ID de herramienta no existe');
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result)    
             }
             
@@ -199,12 +213,12 @@ const delete_herramienta = async (req,res)=>{
                     "messageText": "Herramienta eliminada con éxito"
                 }
             })
-            conn.release;
+            conn.release();
         }
         
         catch(error){
             const result = return_error(500,'Internal server error');
-            conn.release;
+            conn.release();
             res.status(500).json(result)
             console.log(error)
 

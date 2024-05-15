@@ -12,17 +12,17 @@ const check_rol = (rol) => async (req, res, next)=>{
             const estatus = await conn.query("SELECT estatus_activo FROM usuarios WHERE id_usuario = ?",  token_data.id_user)
 
             if ( [].concat(rol).includes(user_rol_database[0].nombre_rol) && parseInt(estatus[0].estatus_activo) === 1){
-                conn.release;
+                conn.release();
                 next()
             }
             else{ 
-                conn.release;               
+                conn.release();               
                 const result = return_error(409,'Acceso denegado: no hay permisos suficientes');
                 res.status(409).json(result)
             }
         } 
         catch (error) {
-            conn.release;
+            conn.release();
             const result = return_error(500,'Internal server error');
             res.status(500).json(result) 
         }
