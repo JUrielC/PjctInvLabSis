@@ -12,7 +12,6 @@ const post_baja = async (req, res) => {
             
             const id_user = await id_user_token(req.headers.authorization)
             const fecha_baja = fecha_hora();
-            console.log(fecha_baja)
             const {id_herramienta, id_motivo, observaciones} = req.body
             const data = [id_herramienta, id_motivo, id_user, fecha_baja, observaciones]
 
