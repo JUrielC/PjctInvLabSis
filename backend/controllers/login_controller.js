@@ -14,7 +14,7 @@ const post_login = async (req, res) =>{
             if(!validation_error.isEmpty()){
                 const mensajeError = validation_error.array()[0].msg;
                 const result = return_error(400,`Datos con formato incorrecto. ${mensajeError}`);
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result) 
             }
 
@@ -24,7 +24,7 @@ const post_login = async (req, res) =>{
 
             if(parseInt(user_validation[0].result) === 0){
                 const result = return_error(404,'El usuario no está registrado');
-                conn.release;    
+                conn.release();    
                 return res.status(400).json(result)    
             }
 
@@ -37,7 +37,7 @@ const post_login = async (req, res) =>{
 
             if(!checkPassword){
                 const result = return_error(400,'Contraseña incorrecta');
-                conn.release;
+                conn.release();
                 return res.status(400).json(result) 
             }
 
@@ -46,13 +46,13 @@ const post_login = async (req, res) =>{
             
             if (!user_activo_validation[0]["estatus_activo"]){
                 const result = return_error(403,'Usuario no activo');
-                conn.release;
+                conn.release();
                 return res.status(403).json(result) 
             }
 
 
 
-            if(checkPassword && user_activo_validation){
+            if(checkPassword && parseInt(user_validation[0].result) !== 0){
 
                 //obtener id de usuario y rol
                 //pass_hash surge de un select a la base de datos con el fin de obtener el passwor registrado ahí
@@ -62,8 +62,6 @@ const post_login = async (req, res) =>{
                 const rol_query = await conn.query ("SELECT ru.nombre_rol FROM roles_usuarios ru INNER JOIN usuarios u ON ru.id_rol = u.id_rol WHERE id_usuario = ?", user)
                 const rol = rol_query[0].nombre_rol;              
 
-                console.log(user)
-                console.log(rol)
                 console.log("Sesion iniciada exitosamente ");
                 const  token_session = await token_sign(user, rol);
                  //res estatus
@@ -75,15 +73,18 @@ const post_login = async (req, res) =>{
                 },
                 "tokenSession": token_session   
                 })
-                conn.release;
+                conn.release();
             }
 
         }
         catch (error){
             const result = return_error(500,'Internal server error');
-            conn.release;    
+            conn.release();    
             res.status(500).json(result)       //console.log(error)
             console.log(error)  
+        }
+        finally{
+            conn.release()
         }
     })
 

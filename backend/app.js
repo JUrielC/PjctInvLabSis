@@ -14,6 +14,7 @@ app.use('/herramientas', require('./routes/herramientas_routes'))
 app.use('/tipo_herramienta', require('./routes/tipoHerramienta_routes'))
 app.use('/login', require('./routes/login_routes'))
 app.use('/origen', require('./routes/origen_routes'))
+app.use('/bajas', require('./routes/bajas_routes'))
 
 
 /*app.use((req, res, next) => {
