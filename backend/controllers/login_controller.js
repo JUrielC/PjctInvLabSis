@@ -61,7 +61,9 @@ const post_login = async (req, res) =>{
                 const user =  user_query[0].id_usuario; 
                 const rol_query = await conn.query ("SELECT ru.nombre_rol FROM roles_usuarios ru INNER JOIN usuarios u ON ru.id_rol = u.id_rol WHERE id_usuario = ?", user)
                 const rol = rol_query[0].nombre_rol;              
-
+                
+                const data_user_query = await conn.query("SELECT nombre_usuario, apellido_paterno from usuarios WHERE id_usuario = ?", user)
+                console.log(data_user_query)
                 console.log("Sesion iniciada exitosamente ");
                 const  token_session = await token_sign(user, rol);
                  //res estatus
@@ -71,7 +73,8 @@ const post_login = async (req, res) =>{
                     "code": 200,
                     "messageText": "Sesion iniciada exitosamente "
                 },
-                "tokenSession": token_session   
+                "tokenSession": token_session,
+                "user_data" : data_user_query[0]
                 })
                 conn.release();
             }
