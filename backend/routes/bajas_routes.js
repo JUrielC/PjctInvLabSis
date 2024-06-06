@@ -8,9 +8,9 @@ const { body, param } = require("express-validator")
 const { post_baja, get_bajas, delete_baja} = require('../controllers/bajas_controller.js');
 //const { route } = require('./herramientas_routes.js');
 
-router.post('/', body(['id_herramienta', 'id_motivo']).isNumeric(), body('observaciones').isLength({max: 255}), post_baja)
+router.post('/',check_token,check_rol(['Administrador', 'Laboratorista']), body(['id_herramienta', 'id_motivo']).isNumeric(), body('observaciones').isLength({max: 255}), post_baja)
 
-router.get('/',get_bajas)
+router.get('/',check_token,check_rol(['Administrador', 'Laboratorista']),get_bajas)
 
 /*router.delete()*/
 

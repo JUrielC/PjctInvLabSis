@@ -63,8 +63,8 @@ const post_login = async (req, res) =>{
                 const rol = rol_query[0].nombre_rol;              
                 
                 const data_user_query = await conn.query("SELECT nombre_usuario, apellido_paterno from usuarios WHERE id_usuario = ?", user)
-                console.log(data_user_query)
-                console.log("Sesion iniciada exitosamente ");
+                /* console.log(data_user_query)
+                console.log("Sesion iniciada exitosamente "); */
                 const  token_session = await token_sign(user, rol);
                  //res estatus
                 res.status(200).json({
@@ -74,8 +74,9 @@ const post_login = async (req, res) =>{
                     "messageText": "Sesion iniciada exitosamente "
                 },
                 "tokenSession": token_session,
-                "user_data" : data_user_query[0]
+                "user_data" : data_user_query[0].nombre_usuario + " " +data_user_query[0].apellido_paterno
                 })
+                //console.log(typeof(data_user_query[0].nombre_usuario))
                 conn.release();
             }
 
