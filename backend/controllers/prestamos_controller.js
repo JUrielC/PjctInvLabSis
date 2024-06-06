@@ -106,11 +106,51 @@ const get_prestamos_activos = async (req, res) => (
             const result = return_error(500,'Internal server error');
             conn.release();
             res.status(500).json(result)
+        }
+    }) 
+)
+
+const get_prestamos = async (req, res) => (
+    await pool.getConnection().then (async (conn) => {
+
+
+        try{
+            //query
+            const query = await conn.query("CALL consultar_prestamos()");
+            //console.log(query[0])
+            res.status(200).json(query[0])
+            conn.release(); 
+        }
+        
+        catch(error){
+            const result = return_error(500,'Internal server error');
+            conn.release();
+            res.status(500).json(result)
             console.log (error)
         }
     }) 
 )
 
+const get_prestamos_concluidos = async (req, res) => (
+    await pool.getConnection().then (async (conn) => {
+
+
+        try{
+            //query
+            const query = await conn.query("CALL consultar_prestamos_concluidos()");
+            //console.log(query[0])
+            res.status(200).json(query[0])
+            conn.release(); 
+        }
+        
+        catch(error){
+            const result = return_error(500,'Internal server error');
+            conn.release();
+            res.status(500).json(result)
+            console.log (error)
+        }
+    }) 
+)
 
 const put_prestamo_devuelto = async (req,res)=>{
     pool.getConnection().then(async(conn) => {
@@ -122,5 +162,7 @@ const put_prestamo_devuelto = async (req,res)=>{
 
 module.exports = {
     post_prestamo,
-    get_prestamos_activos
+    get_prestamos,
+    get_prestamos_activos,
+    get_prestamos_concluidos
 }

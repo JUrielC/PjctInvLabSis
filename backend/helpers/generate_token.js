@@ -9,19 +9,25 @@ const token_sign = async (user, rol) =>{
         },
             process.env.JWT_SECRET,
         {
-            expiresIn: "5h"
+            expiresIn: "1h"
         }
     )
 }
 //verificar token
-const verify_token = async (token) =>{
-    try{
-        return jwt.verify(token, process.env.JWT_SECRET)
+const verify_token = async (token) => {
+    try {
+        //console.log(jwt.verify(token, process.env.JWT_SECRET))
+        return jwt.verify(token, process.env.JWT_SECRET);
+    } 
+    catch (error) {
+        if (error instanceof jwt.TokenExpiredError) {
+            console.log("Token has expired");
+            return "Token has expired";
+        } else {
+            return null;
+        }
     }
-    catch(error){
-        return null;
-    }
-}
+};
 const decode_sign = async (token) =>{
     
 }

@@ -1,6 +1,6 @@
 const { verify_token } = require('../helpers/generate_token')
 const return_error = require('../helpers/return_error.js');
-require('dotenv').config({path: 'backend/.env'});
+require('dotenv').config({ path: 'backend/.env' });
 
 const check_token = async (req, res, next) => {
     try {
@@ -9,18 +9,29 @@ const check_token = async (req, res, next) => {
         //console.log(token)
         const token_data = await verify_token(token)
         //console.log(token_data)
-        if (token_data) {
+        if ((token_data) && (token_data !== "Token has expired")) {
             next()
         }
-        else{
-            const result = return_error(409,'Acceso denegado: token no válido');
-            res.status(409).json(result)
+        else {
+
+            if (token_data === "Token has expired") {
+                
+                const result = return_error(401, `${token_data}: La sesión ha expirado`);
+                res.status(401).json(result)
+
+            }
+            else {
+
+                const result = return_error(403, 'Acceso denegado: no hay permisos suficientes');
+                res.status(403).json(result)
+            }
+
         }
 
     } catch (error) {
-        const result = return_error(500,'Internal server error');
-        res.status(500).json(result)       
-        //console.log(error) 
+        const result = return_error(500, 'Internal server error');
+        res.status(500).json(result)
+        console.log(error)
     }
 }
 /* const prueba = async()=>{
