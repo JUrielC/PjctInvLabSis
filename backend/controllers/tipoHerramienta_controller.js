@@ -74,7 +74,7 @@ const get_items_disp_por_tipo = async (red, res) => {
             const query = await conn.query("SELECT t.id_tipo, t.nombre_tipo, IFNULL(JSON_ARRAYAGG(" +
                 " h.id_herramienta), '[]') AS herramientas " +
                 "FROM tipo_herramienta t LEFT JOIN herramientas h ON t.id_tipo = h.id_tipo " +
-                "WHERE h.id_estatus = 1 GROUP BY t.id_tipo, t.nombre_tipo");
+                "WHERE h.id_estatus = 1 GROUP BY t.id_tipo, t.nombre_tipo ORDER BY t.nombre_tipo asc");
             res.status(200).json(query)
             conn.release();
 

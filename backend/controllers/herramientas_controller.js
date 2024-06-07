@@ -13,8 +13,8 @@ const post_herramienta = async(req, res)=>{
             const id_user = await id_user_token(req.headers.authorization) 
             const id_estatus = 1; //id _estatus = 1 es el estatus "Disponible"
             const fecha_alta = fecha_hora();
-            const {id_tipo, observaciones,id_origen} = req.body;
-            const data = [id_tipo, id_estatus, observaciones,fecha_alta,id_origen, id_user];
+            const {id_tipo, observaciones,id_origen, cantidad} = req.body;
+            const data = [id_tipo, id_estatus,id_origen,fecha_alta, observaciones, id_user, cantidad];
             
             //validacion expresss validator
             const validation_error = validationResult(req); 
@@ -45,15 +45,16 @@ const post_herramienta = async(req, res)=>{
             }
 
             //query
-            const query = await conn.query("INSERT INTO herramientas (id_tipo, id_estatus, observaciones, fecha_alta, id_origen, id_usuario) VALUES (?,?,?,?,?,?)",data)
-            const insert_id = parseInt(query.insertId)
+            const query = await conn.query("CALL insertar_herramientas (?,?,?,?,?,?,?)",data)
+            const idsArray = query[0]
+            const ids = idsArray.map(item => item.id_herramienta);
+            const idsString = ids.join(' ');
             //res estatus
             res.status(201).json({
                 "ok": true,
-                "id_herramienta": insert_id,
                 "message": {
                     "code": 201,
-                    "messageText": "Registrado con éxito"
+                    "messageText": "Registrada(s) con éxito. ID(s) registrados: " + idsString
                 }   
             })
 
@@ -129,13 +130,13 @@ const get_herramienta_por_tipo = async (req,res)=>{
 
     })
 }
-/*******la fecha de alta no se debe modificar ni el usuario que hace el alta********/
+/*******la fecha de alta no se debe modificar ni el usuario que hace el alta. Tampoco el estatus********/
 const put_herramienta = async (req,res)=>{
     await pool.getConnection().then(async (conn) => {
 
         try{
-            const {id_herramienta, id_tipo, id_estatus, observaciones, origen} = req.body;
-            const data = [id_tipo, id_estatus, observaciones, origen, id_herramienta];
+            const {id_herramienta, id_tipo, observaciones, origen} = req.body;
+            const data = [id_tipo, observaciones, origen, id_herramienta];
 
             //validacion expresss validator
             const validation_error = validationResult(req); 
@@ -147,16 +148,15 @@ const put_herramienta = async (req,res)=>{
 
              //validation tipo exists, estatus exists
              const validation_tipo = await conn.query("SELECT COUNT (id_tipo) as result FROM tipo_herramienta WHERE id_tipo = ?", id_tipo)
-             const validation_estatus = await conn.query("SELECT COUNT (id_estatus) as result FROM estatus_herramienta WHERE id_estatus = ?", id_estatus)
-            
-             if(parseInt(validation_tipo[0].result) === 0 || parseInt(validation_estatus[0].result) === 0){
+             
+             if(parseInt(validation_tipo[0].result) === 0){
                 const result = return_error(400,'El tipo de herramienta o el estatus no existe');
                 conn.release();    
                 return res.status(400).json(result)    
             }
 
             //query
-            const query = await conn.query("UPDATE herramientas SET id_tipo = ?, id_estatus = ?, observaciones = ?, origen = ? WHERE id_herramienta = ?",data)
+            const query = await conn.query("UPDATE herramientas SET id_tipo = ?, observaciones = ?, origen = ? WHERE id_herramienta = ?",data)
             const insert_id = parseInt(query.insertId)
             //res estatus
             res.status(201).json({

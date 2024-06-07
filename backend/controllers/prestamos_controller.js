@@ -44,7 +44,7 @@ const post_prestamo = async (req, res) => {
                 }
 
             //validacion carrera, id_ solicitante
-            const validation_carrera = await conn.query("SELECT COUNT (id_carrera) as result FROM carreras WHERE id_carrera = ?", id_carrera)
+            const validation_carrera = await conn.query("SELECT COUNT(id_carrera) as result FROM carreras WHERE id_carrera = ?", id_carrera)
 
 
             if(parseInt(validation_carrera[0].result) === 0){
