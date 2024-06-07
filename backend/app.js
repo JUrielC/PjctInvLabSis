@@ -18,6 +18,7 @@ app.use('/bajas', require('./routes/bajas_routes'))
 app.use('/prestamos', require('./routes/prestamo_routes'))
 app.use('/usuarios', require('./routes/usuarios_routes'))
 app.use('/solicitantes', require('./routes/solicitantes_routes'))
+app.use('/carreras', require('./routes/carreras_routes'))
 
 
 /*app.use((req, res, next) => {
