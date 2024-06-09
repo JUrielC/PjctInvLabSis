@@ -136,7 +136,7 @@ const put_herramienta = async (req,res)=>{
 
         try{
             const {id_herramienta, id_tipo, observaciones, origen} = req.body;
-            const data = [id_tipo, observaciones, origen, id_herramienta];
+            const data = [ id_herramienta, id_tipo, origen, observaciones];
 
             //validacion expresss validator
             const validation_error = validationResult(req); 
@@ -145,7 +145,7 @@ const put_herramienta = async (req,res)=>{
                 conn.release();    
                 return res.status(400).json(result) 
             }
-
+/* 
              //validation tipo exists, estatus exists
              const validation_tipo = await conn.query("SELECT COUNT (id_tipo) as result FROM tipo_herramienta WHERE id_tipo = ?", id_tipo)
              
@@ -153,10 +153,10 @@ const put_herramienta = async (req,res)=>{
                 const result = return_error(400,'El tipo de herramienta o el estatus no existe');
                 conn.release();    
                 return res.status(400).json(result)    
-            }
+            } */
 
             //query
-            const query = await conn.query("UPDATE herramientas SET id_tipo = ?, observaciones = ?, origen = ? WHERE id_herramienta = ?",data)
+            const query = await conn.query("call actualizar_herramienta(?,?,?,?)",data)
             const insert_id = parseInt(query.insertId)
             //res estatus
             res.status(201).json({
@@ -196,7 +196,7 @@ const delete_herramienta = async (req,res)=>{
             }
 
             //validation id_herramienta exists
-            const validation_id_herr = await conn.query("SELECT COUNT (id_herramienta) as result FROM herramientas WHERE id_herramienta = ?",id_herramienta)
+            const validation_id_herr = await conn.query("SELECT COUNT(id_herramienta) as result FROM herramientas WHERE id_herramienta = ?",id_herramienta)
 
             if(parseInt(validation_id_herr[0].result) === 0){
                 const result = return_error(400,'El ID de herramienta no existe');
@@ -204,6 +204,26 @@ const delete_herramienta = async (req,res)=>{
                 return res.status(400).json(result)    
             }
             
+            //validation estatus == disponible
+
+            const validation_estatus = await conn.query("SELECT id_estatus from herramientas where id_herramienta = ?", id_herramienta)
+            const validation_registro = await conn.query ("SELECT id_herramienta FROM prestamos where id_herramienta = ?", id_herramienta)
+            if(parseInt(validation_estatus[0].id_estatus) == 2){
+                const result = return_error(400,'La herramienta tiene un prestamo en curso');
+                conn.release();    
+                return res.status(400).json(result)  
+            }
+            //console.log(validation_registro[0].id_herramienta)
+            if(validation_registro[0] !== undefined){
+                
+            if(parseInt(validation_registro[0].id_herramienta) === parseInt(id_herramienta)){
+                
+                const result = return_error(400,'La herramienta tiene un registro de prestamo concluido, elimine el registro antes');
+                conn.release();    
+                return res.status(400).json(result)  
+            }
+            }
+
             //query
             await conn.query("DELETE FROM herramientas WHERE id_herramienta = ?", id_herramienta);
             res.status(200).json({

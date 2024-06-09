@@ -127,28 +127,28 @@ const put_usuario = async (req, res) => {
 
 }
 
-const put_usuario_password = async(req, res) =>{
-    pool.getConnection().then(async (conn)=>{
+const put_usuario_password = async (req, res) => {
+    pool.getConnection().then(async (conn) => {
 
         try {
 
-        const {id_usuario, password} = req.body
-        const pass_encrypt = await encrypt(password);
-        const data = [pass_encrypt, id_usuario]
+            const { id_usuario, password } = req.body
+            const pass_encrypt = await encrypt(password);
+            const data = [pass_encrypt, id_usuario]
 
-        await conn.query("UPDATE usuarios SET password = ? WHERE id_usuario = ?", data)
-        res.status(201).json({
-            "ok": true,
-            "message": {
-                "code": 200,
-                "messageText": "Password actualizado con éxito"
-            }
-        })
-        conn.release();
-        
-            
+            await conn.query("UPDATE usuarios SET password = ? WHERE id_usuario = ?", data)
+            res.status(201).json({
+                "ok": true,
+                "message": {
+                    "code": 200,
+                    "messageText": "Password actualizado con éxito"
+                }
+            })
+            conn.release();
+
+
         } catch (error) {
-      
+
             const result = return_error(500, 'Internal server error');
             conn.release();
             res.status(500).json(result)
@@ -156,6 +156,13 @@ const put_usuario_password = async(req, res) =>{
         }
     })
 }
+
+const put_user_estatus = async (req, res) => {
+    pool.getConnection().then(async (conn) => {
+        
+    })
+}
+
 
 module.exports = {
     post_usuario,

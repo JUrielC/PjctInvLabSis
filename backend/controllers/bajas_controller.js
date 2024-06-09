@@ -116,7 +116,6 @@ const delete_baja = async (req, res) => {
     await pool.getConnection().then(async (conn) =>{
 
 
-
     })
 }
 
