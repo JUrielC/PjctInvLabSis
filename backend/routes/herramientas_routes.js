@@ -13,7 +13,7 @@ router.get('/',check_token,check_rol(['Administrador', 'Laboratorista', 'Asisten
 
 router.get('/tipo/:id_tipo',check_token,check_rol(['Administrador', 'Laboratorista', 'Asistente']), param('id_tipo').isNumeric(), get_herramienta_por_tipo);
 
-router.put('/',check_token,check_rol(['Administrador', 'Laboratorista']),  body('id_tipo').isNumeric(),body('id_estatus').isNumeric(),body('observaciones').isLength({max: 255}), put_herramienta);
+router.put('/',check_token,check_rol(['Administrador', 'Laboratorista']),  body('id_herramienta').isNumeric(), put_herramienta);
 
 router.delete('/:id_herramienta', param('id_herramienta').isNumeric(), delete_herramienta); 
 
