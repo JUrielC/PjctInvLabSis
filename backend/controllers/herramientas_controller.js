@@ -135,8 +135,8 @@ const put_herramienta = async (req,res)=>{
     await pool.getConnection().then(async (conn) => {
 
         try{
-            const {id_herramienta, id_tipo, observaciones, origen} = req.body;
-            const data = [ id_herramienta, id_tipo, origen, observaciones];
+            const {id_herramienta, id_tipo, observaciones, id_origen} = req.body;
+            const data = [ id_herramienta, id_tipo, id_origen, observaciones];
 
             //validacion expresss validator
             const validation_error = validationResult(req); 

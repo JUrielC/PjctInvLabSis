@@ -5,7 +5,7 @@ const {check_rol} = require('../middlewares/check_rol.js')
 const { body, param } = require("express-validator");
 
 
-const {post_usuario, get_usuarios, put_usuario, put_usuario_password} = require('../controllers/usuarios_controllers.js')
+const {post_usuario, get_usuarios, put_usuario, put_usuario_password, put_user_estatus} = require('../controllers/usuarios_controllers.js')
 
 router.post('/',check_token,check_rol(['Administrador']), body('id_rol').isNumeric(), 
 body(['nombre_usuario', 'apellido_paterno']).isLength({min:3, max: 45}).withMessage('El nombre y el apellido deben tener mínimo 3 caracteres y máximo 45'), 
@@ -14,10 +14,14 @@ body('password').isLength({min:5, max:60}).withMessage('El password debe tener a
 post_usuario)
 
 
-router.get('/',check_token,check_rol(['Administrador']), get_usuarios )
+router.get('/',check_token,check_rol(['Administrador']),get_usuarios )
 
-router.put('/',check_token,check_rol(['Administrador']),put_usuario)
+router.put('/',check_token,check_rol(['Administrador']),body('id_rol').isNumeric(), 
+body(['nombre_usuario', 'apellido_paterno']).isLength({min:3, max: 45}).withMessage('El nombre y el apellido deben tener mínimo 3 caracteres y máximo 45'), 
+body('nombre_login').isLength({min: 3, max:20}).withMessage('El nombre de usuario debe ser de mínimo 3 caracteres y máximo de 20'), put_usuario)
 
-router.put ('/rec_pass',check_token,check_rol(['Administrador']), put_usuario_password)
+router.put ('/rec_pass',check_token,check_rol(['Administrador']),body('password').isLength({min: 5, max:60}), put_usuario_password)
+
+router.put ('/estatus_activo',check_token,check_rol(['Administrador']), put_user_estatus)
 
 module.exports = router
