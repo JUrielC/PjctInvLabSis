@@ -3,6 +3,7 @@ const pool = require('../config/database.js');
 const { validationResult } = require('express-validator');
 const { encrypt } = require('../helpers/handle_bcrybpt.js')
 const return_error = require('../helpers/return_error.js')
+const id_user_token = require('../helpers/return_id_user_token.js')
 
 
 const post_usuario = async (req, res) => {
@@ -82,8 +83,8 @@ const put_usuario = async (req, res) => {
     pool.getConnection().then(async (conn) => {
         try {
 
-            const { id_usuario, id_rol, nombre_usuario, apellido_paterno, apellido_materno, nombre_login, estatus_activo } = req.body
-            const data = [id_rol, nombre_usuario, apellido_paterno, apellido_materno, nombre_login, estatus_activo, id_usuario]
+            const { id_usuario, id_rol, nombre_usuario, apellido_paterno, apellido_materno, nombre_login } = req.body
+            const data = [id_rol, nombre_usuario, apellido_paterno, apellido_materno, nombre_login, id_usuario]
 
             //validation error express validator  
             const validation_error = validationResult(req);
@@ -105,7 +106,7 @@ const put_usuario = async (req, res) => {
 
 
             //query
-            await conn.query("UPDATE usuarios SET id_rol = ?, nombre_usuario = ?, apellido_paterno = ?, apellido_materno = ?, nombre_login = ?, estatus_activo = ? WHERE id_usuario = ?", data);
+            await conn.query("UPDATE usuarios SET id_rol = ?, nombre_usuario = ?, apellido_paterno = ?, apellido_materno = ?, nombre_login = ? WHERE id_usuario = ?", data);
             res.status(201).json({
                 "ok": true,
                 "message": {
@@ -136,6 +137,14 @@ const put_usuario_password = async (req, res) => {
             const pass_encrypt = await encrypt(password);
             const data = [pass_encrypt, id_usuario]
 
+            //validation error express validator  
+            const validation_error = validationResult(req);
+            if (!validation_error.isEmpty()) {
+                const result = return_error(400, 'Datos con formato incorrecto, ingrese mínimo 5 caracteres');
+                conn.release();
+                return res.status(400).json(result)
+            }
+
             await conn.query("UPDATE usuarios SET password = ? WHERE id_usuario = ?", data)
             res.status(201).json({
                 "ok": true,
@@ -159,7 +168,43 @@ const put_usuario_password = async (req, res) => {
 
 const put_user_estatus = async (req, res) => {
     pool.getConnection().then(async (conn) => {
-        
+        try {
+            const { id_usuario } = req.body
+            const data = id_usuario;
+            const usuario_actual = await id_user_token(req.headers.authorization)
+
+
+            //validation error express validator  
+            const validation_error = validationResult(req);
+            if (!validation_error.isEmpty()) {
+                const result = return_error(400, 'Datos con formato incorrecto');
+                conn.release();
+                return res.status(400).json(result)
+            }
+
+            if (parseInt(id_usuario) === parseInt(usuario_actual)) {
+
+                const result = return_error(400, 'No puede desactivarse a sí mismo');
+                conn.release();
+                return res.status(400).json(result)
+            }
+
+            await conn.query("call cambiar_estatus_user(?)", data)
+            res.status(201).json({
+                "ok": true,
+                "message": {
+                    "code": 200,
+                    "messageText": "Actualizado con éxito"
+                }
+            })
+            conn.release();
+
+        } catch (error) {
+            const result = return_error(500, 'Internal server error');
+            conn.release();
+            res.status(500).json(result)
+            console.log(error)
+        }
     })
 }
 
@@ -168,6 +213,7 @@ module.exports = {
     post_usuario,
     get_usuarios,
     put_usuario,
-    put_usuario_password
+    put_usuario_password,
+    put_user_estatus
 }
 
