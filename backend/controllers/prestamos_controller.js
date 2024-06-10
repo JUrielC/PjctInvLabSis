@@ -96,7 +96,7 @@ const get_prestamos_activos = async (req, res) => (
 
         try {
             //query
-            const query = await conn.query("CALL consultar_prestamo_activos()");
+            const query = await conn.query("CALL consultar_prestamos_activos()");
             //console.log(query[0])
             res.status(200).json(query[0])
             conn.release();
@@ -191,6 +191,9 @@ const put_prestamo_devuelto = async (req, res) => {
 
     })
 }
+
+
+/* Delete solo prestamos concluidos */
 
 module.exports = {
     post_prestamo,

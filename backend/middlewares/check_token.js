@@ -16,7 +16,7 @@ const check_token = async (req, res, next) => {
 
             if (token_data === "Token has expired") {
                 
-                const result = return_error(401, `${token_data}: La sesión ha expirado`);
+                const result = return_error(401, `La sesión ha expirado, reinice la sesión`);
                 res.status(401).json(result)
 
             }
