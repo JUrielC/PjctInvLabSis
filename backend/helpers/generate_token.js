@@ -9,7 +9,7 @@ const token_sign = async (user, rol) =>{
         },
             process.env.JWT_SECRET,
         {
-            expiresIn: "1h"
+            expiresIn: "3h"
         }
     )
 }
