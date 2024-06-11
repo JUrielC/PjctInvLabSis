@@ -17,7 +17,7 @@ const check_rol = (rol) => async (req, res, next)=>{
             }
             else{ 
                 conn.release();               
-                const result = return_error(403,'Acceso denegado: no hay permisos suficientes');
+                const result = return_error(403,'Acceso denegado!!');
                 res.status(403).json(result)
             }
         } 
