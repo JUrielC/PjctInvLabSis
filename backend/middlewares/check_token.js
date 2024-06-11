@@ -22,7 +22,7 @@ const check_token = async (req, res, next) => {
             }
             else {
 
-                const result = return_error(403, 'Acceso denegado: no hay permisos suficientes');
+                const result = return_error(403, 'No realizado: Acceso denegado');
                 res.status(403).json(result)
             }
 

@@ -15,6 +15,6 @@ router.get('/tipo/:id_tipo',check_token,check_rol(['Administrador', 'Laboratoris
 
 router.put('/',check_token,check_rol(['Administrador', 'Laboratorista']),  body('id_herramienta').isNumeric(), put_herramienta);
 
-router.delete('/:id_herramienta', param('id_herramienta').isNumeric(), delete_herramienta); 
+router.delete('/:id_herramienta',check_token,check_rol(['Administrador', 'Laboratorista']), param('id_herramienta').isNumeric(), delete_herramienta); 
 
 module.exports = router

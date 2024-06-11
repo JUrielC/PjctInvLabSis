@@ -24,6 +24,17 @@ const get_solicitantes = async(req, res)=>{
     })
 }
 
+/* const delete_solicitante =  async(req, res)=>{
+    pool.getConnection().then(async(conn)=>{
+
+        const id_solicitante = req.id_param.id_solicitante
+
+        await conn.query ("DELETE FROM solicitantes WHERE id_solicitante = ?", id_solicitante)
+
+
+
+    })
+} */
 
 module.exports ={
     get_solicitantes

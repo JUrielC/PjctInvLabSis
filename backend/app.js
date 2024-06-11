@@ -2,12 +2,20 @@ const express = require('express');
 const app = express();
 require('dotenv').config({path: 'backend/.env'});
 const cors = require('cors');
-app.use(cors());
+/* app.use(cors()); */
 
 
 app.listen(process.env.NODE_PORT, () => {
     console.log('server running '+ process.env.NODE_PORT);
 });
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+})
 
 app.use(express.json());
 app.use('/herramientas', require('./routes/herramientas_routes'))
@@ -21,14 +29,8 @@ app.use('/solicitantes', require('./routes/solicitantes_routes'))
 app.use('/carreras', require('./routes/carreras_routes'))
 
 
-/*app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
-    next();
-})
-*/
+
+
 
 /*NODE_PORT="3000"
 HOST="bqvpx1qe8f1g2jhxyxjj-mysql.services.clever-cloud.com"

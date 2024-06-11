@@ -14,8 +14,8 @@ router.get('/prestamos_activos',check_token,check_rol(['Administrador', 'Laborat
 
 router.get('/prestamos_concluidos',check_token,check_rol(['Administrador', 'Laboratorista', 'Asistente']), get_prestamos_concluidos)
 
-router.post('/',check_token,check_rol(['Administrador', 'Laboratorista','Asistente ']), post_prestamo)
+router.post('/',check_token,check_rol(['Administrador', 'Laboratorista','Asistente']), post_prestamo)
 
-router.put('/devolver_prestamo',check_token,check_rol(['Administrador', 'Laboratorista','Asistente ']), put_prestamo_devuelto)
+router.put('/devolver_prestamo',check_token,check_rol(['Administrador', 'Laboratorista','Asistente']), put_prestamo_devuelto)
 
 module.exports = router
