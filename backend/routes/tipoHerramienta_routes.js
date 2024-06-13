@@ -12,8 +12,8 @@ router.get('/',check_token,check_rol(['Administrador', 'Laboratorista', 'Asisten
 
 router.get('/tipos_mas_herramientas' ,check_token,check_rol(['Administrador', 'Laboratorista', 'Asistente']),  get_items_disp_por_tipo)
 
-router.put('/' ,check_token,check_rol(['Administrador', 'Laboratorista']), body('id_tipo').isNumeric(), put_tipoHerramienta);
+router.put('/' ,check_token,check_rol(['Administrador']), body('id_tipo').isNumeric(), put_tipoHerramienta);
 
-router.delete('/:id_tipo',check_token,check_rol(['Administrador', 'Laboratorista']), param('id_tipo').isNumeric(), delete_tipoHerramienta); /**/
+router.delete('/:id_tipo',check_token,check_rol(['Administrador']), param('id_tipo').isNumeric(), delete_tipoHerramienta); /**/
 
 module.exports = router
