@@ -21,7 +21,7 @@ const verify_token = async (token) => {
     } 
     catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
-            console.log("Token has expired");
+            //console.log("Token has expired");
             return "Token has expired";
         } else {
             return null;

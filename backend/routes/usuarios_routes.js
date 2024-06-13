@@ -13,7 +13,6 @@ body('nombre_login').isLength({min: 3, max:20}).withMessage('El nombre de usuari
 body('password').isLength({min:5, max:60}).withMessage('El password debe tener al menos 5 caracteres y máximo 60'), body('estatus_activo').isNumeric({min:0, max:1}),
 post_usuario)
 
-
 router.get('/',check_token,check_rol(['Administrador']),get_usuarios )
 
 router.put('/',check_token,check_rol(['Administrador']),body('id_rol').isNumeric(), 

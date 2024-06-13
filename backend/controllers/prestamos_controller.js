@@ -13,8 +13,8 @@ const post_prestamo = async (req, res) => {
             const encargado_entrega = await id_user_token(req.headers.authorization)
             const fecha_prestamo = fecha_hora();
             const id_estatus = 1; //estatus de prestamo en curso, revisar tabla estatus_prestamo de la db
-            const { id_herramienta, id_carrera, id_solicitante, observaciones } = req.body
-            const data = [encargado_entrega, id_herramienta, id_carrera, id_estatus, id_solicitante, fecha_prestamo, observaciones]
+            const { id_herramienta, id_solicitante, observaciones } = req.body
+            const data = [encargado_entrega, id_herramienta, id_estatus, id_solicitante, fecha_prestamo, observaciones]
 
             //validacion expresss validator
             const validation_error = validationResult(req);
@@ -43,15 +43,6 @@ const post_prestamo = async (req, res) => {
                 return res.status(400).json(result)
             }
 
-            //validacion carrera, id_ solicitante
-            const validation_carrera = await conn.query("SELECT COUNT(id_carrera) as result FROM carreras WHERE id_carrera = ?", id_carrera)
-
-
-            if (parseInt(validation_carrera[0].result) === 0) {
-                const result = return_error(400, 'La solicitud contiene parámetros incorrectos, se recomienda contactar al equipo de desarrollo: no se encuentra el ID de la carrera.');
-                conn.release();
-                return res.status(400).json(result)
-            }
 
             const validation_solicitante = await conn.query("SELECT COUNT (id_solicitante) as result FROM solicitantes WHERE id_solicitante = ?", id_solicitante)
 
@@ -63,7 +54,7 @@ const post_prestamo = async (req, res) => {
 
 
             //QUERY
-            const query = await conn.query("CALL registrar_prestamo (?,?,?,?,?,?,?)", data)
+            const query = await conn.query("CALL registrar_prestamo (?,?,?,?,?,?)", data)
             //console.log(query)
             //const insert_id = parseInt(query[0].insertId)
             res.status(201).json({
@@ -195,10 +186,37 @@ const put_prestamo_devuelto = async (req, res) => {
 
 /* Delete solo prestamos concluidos */
 
+const delete_prestamos_concluidos = async (req, res) => {
+    pool.getConnection().then(async (conn) => {
+        try {
+
+            await conn.query("DELETE FROM prestamos where id_estatus = 2")
+            
+            res.status(200).json({
+                "ok": true,
+                "message": {
+                    "code": 200,
+                    "messageText": "Historial eliminado exitosamente"
+                }
+            })
+            conn.release();
+
+        } catch (error) {
+            const result = return_error(500, 'Internal server error');
+            conn.release();
+            res.status(500).json(result)
+            console.log(error)
+        }
+
+
+    })
+}
+
 module.exports = {
     post_prestamo,
     get_prestamos,
     get_prestamos_activos,
     get_prestamos_concluidos,
-    put_prestamo_devuelto
+    put_prestamo_devuelto,
+    delete_prestamos_concluidos
 }
