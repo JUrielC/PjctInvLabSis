@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-require('dotenv').config({path: 'backend/.env'});
+//require('dotenv').config({path: 'backend/.env'});
 const cors = require('cors');
 app.use(cors()); 
 
@@ -32,10 +32,3 @@ app.use('/carreras', require('./routes/carreras_routes'))
 
 
 
-/*NODE_PORT="3000"
-HOST="bqvpx1qe8f1g2jhxyxjj-mysql.services.clever-cloud.com"
-PORT="3306"
-USER="ugpwh5vn4olvh15t"
-PASSWORD="DHGMBoPlzbo6Q9rFxHRW"
-DATABASE="bqvpx1qe8f1g2jhxyxjj"
-JWT_SECRET = "589696852"*/
