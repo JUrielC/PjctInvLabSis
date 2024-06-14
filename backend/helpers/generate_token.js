@@ -1,5 +1,5 @@
 const jwt = require ('jsonwebtoken');
-//require('dotenv').config({path: 'backend/.env'});
+require('dotenv').config({path: 'backend/.env'});
 //generar un token
 const token_sign = async (user, rol) =>{
     return jwt.sign(
