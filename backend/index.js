@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 require('dotenv').config({path: 'backend/.env'});
 const cors = require('cors');
-/* app.use(cors()); */
+app.use(cors()); 
 
 
 app.listen(process.env.NODE_PORT, () => {
