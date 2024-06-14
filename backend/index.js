@@ -14,11 +14,6 @@ app.use((req, res, next) => {
 });
 
 
-
-app.listen(process.env.NODE_PORT, () => {
-    console.log('server running '+ process.env.NODE_PORT);
-});
-
 app.use(express.json());
 app.use('/herramientas', require('./routes/herramientas_routes'))
 app.use('/tipo_herramienta', require('./routes/tipoHerramienta_routes'))
@@ -29,6 +24,11 @@ app.use('/prestamos', require('./routes/prestamo_routes'))
 app.use('/usuarios', require('./routes/usuarios_routes'))
 app.use('/solicitantes', require('./routes/solicitantes_routes'))
 app.use('/carreras', require('./routes/carreras_routes'))
+
+app.listen(process.env.NODE_PORT, () => {
+    console.log('server running '+ process.env.NODE_PORT);
+});
+
 
 
 
