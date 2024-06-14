@@ -1,6 +1,6 @@
 const { verify_token } = require('../helpers/generate_token')
 const return_error = require('../helpers/return_error.js');
-//require('dotenv').config({ path: 'backend/.env' });
+require('dotenv').config({ path: 'backend/.env' });
 
 const check_token = async (req, res, next) => {
     try {
