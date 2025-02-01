@@ -1,4 +1,4 @@
 node_modules/
 front/
 backend/pruebas.js
-.env
+backend/.env
