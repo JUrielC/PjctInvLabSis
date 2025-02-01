@@ -1,14 +1,21 @@
 {
     "builds": [
-        {
-            "src": "backend/index.js",
-            "use": "@vercel-node"
-        }
+      {
+        "src": "backend/index.js",
+        "use": "@vercel/node"
+      }
     ],
     "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/"
-        }
+      { "src": "/herramientas(.*)", "dest": "/backend/routes/herramientas_routes$1" },
+      { "src": "/tipo_herramienta(.*)", "dest": "/backend/routes/tipoHerramienta_routes$1" },
+      { "src": "/login(.*)", "dest": "/backend/routes/login_routes$1" },
+      { "src": "/origen(.*)", "dest": "/backend/routes/origen_routes$1" },
+      { "src": "/bajas(.*)", "dest": "/backend/routes/bajas_routes$1" },
+      { "src": "/prestamos(.*)", "dest": "/backend/routes/prestamo_routes$1" },
+      { "src": "/usuarios(.*)", "dest": "/backend/routes/usuarios_routes$1" },
+      { "src": "/solicitantes(.*)", "dest": "/backend/routes/solicitantes_routes$1" },
+      { "src": "/carreras(.*)", "dest": "/backend/routes/carreras_routes$1" },
+      { "src": "/(.*)", "dest": "/backend/index.js" }
     ]
-}
+  }
+  
